@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokyo Talkies — Modern Street Fashion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-fadeInUp {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease-out forwards;
+        }
+
+        .animate-slideInRight {
+            animation: slideInRight 0.8s ease-out forwards;
+        }
+
+        .animate-scaleIn {
+            animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        /* Parallax Effect */
+        .parallax {
+            transition: transform 0.5s ease-out;
+        }
+
+        /* Hover Effects */
+        .hover-glow:hover {
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Product Card Hover */
+        .product-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .product-card img {
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Button Animations */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+            z-index: -1;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-text-gold {
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Dark Mode Styles */
+        .dark {
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        .dark .card-light {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        /* Light Mode Styles */
+        .light {
+            background-color: #ffffff;
+            color: #1a1a1a;
+        }
+
+        .light .card-light {
+            background-color: #f9f9f9;
+            color: #1a1a1a;
+        }
+
+        /* Masonry Grid */
+        .masonry {
+            column-count: 3;
+            column-gap: 1.5rem;
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .masonry {
+                column-count: 2;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .masonry {
+                column-count: 1;
+            }
+        }
+
+        /* Navbar Blur Effect */
+        .navbar-blur {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .dark .navbar-blur {
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        /* Carousel */
+        .carousel-container {
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-item {
+            scroll-snap-align: start;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Main App Component
+        function App() {
+            const [darkMode, setDarkMode] = useState(true);
+            const [isScrolled, setIsScrolled] = useState(false);
+            const [activeFilter, setActiveFilter] = useState('All');
+
+            useEffect(() => {
+                const handleScroll = () => {
+                    setIsScrolled(window.scrollY > 50);
+                };
+                window.addEventListener('scroll', handleScroll);
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            return (
+                <div className={darkMode ? 'dark' : 'light'}>
+                    <Navbar darkMode={darkMode} setDarkMode={setDarkMode} isScrolled={isScrolled} />
+                    <HeroSection darkMode={darkMode} />
+                    <FeaturedCollections darkMode={darkMode} activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+                    <TrendingProducts darkMode={darkMode} />
+                    <BrandStory darkMode={darkMode} />
+                    <Lookbook darkMode={darkMode} />
+                    <Testimonials darkMode={darkMode} />
+                    <Newsletter darkMode={darkMode} />
+                    <Footer darkMode={darkMode} />
+                </div>
+            );
+        }
+
+        // Navbar Component
+        function Navbar({ darkMode, setDarkMode, isScrolled }) {
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+            return (
+                <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'navbar-blur shadow-lg' : ''}`}>
+                    <div className="max-w-7xl mx-auto px-6 py-4">
+                        <div className="flex items-center justify-between">
+                            <div className="text-2xl font-display font-bold tracking-wider animate-fadeIn">
+                                <span className="gradient-text-gold">TOKYO</span>
+                                <span className={darkMode ? 'text-white' : 'text-black'}> TALKIES</span>
+                            </div>
+
+                            {/* Desktop Menu */}
+                            <div className="hidden md:flex items-center space-x-8">
+                                <a href="#home" className={`font-medium hover:opacity-70 transition ${darkMode ? 'text-white' : 'text-black'}`}>Home</a>
+                                <a href="#collections" className={`font-medium hover:opacity-70 transition ${darkMode ? 'text-white' : 'text-black'}`}>Collections</a>
+                                <a href="#products" className={`font-medium hover:opacity-70 transition ${darkMode ? 'text-white' : 'text-black'}`}>Shop</a>
+                                <a href="#story" className={`font-medium hover:opacity-70 transition ${darkMode ? 'text-white' : 'text-black'}`}>Story</a>
+                                <a href="#lookbook" className={`font-medium hover:opacity-70 transition ${darkMode ? 'text-white' : 'text-black'}`}>Lookbook</a>
+                            </div>
+
+                            {/* Icons */}
+                            <div className="flex items-center space-x-6">
+                                <button onClick={() => setDarkMode(!darkMode)} className={`text-xl hover:scale-110 transition-transform ${darkMode ? 'text-white' : 'text-black'}`}>
+                                    <i className={darkMode ? 'fas fa-sun' : 'fas fa-moon'}></i>
+                                </button>
+                                <button className={`text-xl hover:scale-110 transition-transform ${darkMode ? 'text-white' : 'text-black'}`}>
+                                    <i className="fas fa-search"></i>
+                                </button>
+                                <button className={`text-xl hover:scale-110 transition-transform ${darkMode ? 'text-white' : 'text-black'}`}>
+                                    <i className="fas fa-shopping-bag"></i>
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                                </button>
+                                <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className={`md:hidden text-xl ${darkMode ? 'text-white' : 'text-black'}`}>
+                                    <i className="fas fa-bars"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile Menu */}
+                        {mobileMenuOpen && (
+                            <div className={`md:hidden mt-4 pb-4 animate-fadeIn`}>
+                                <a href="#home" className={`block py-2 font-medium ${darkMode ? 'text-white' : 'text-black'}`}>Home</a>
+                                <a href="#collections" className={`block py-2 font-medium ${darkMode ? 'text-white' : 'text-black'}`}>Collections</a>
+                                <a href="#products" className={`block py-2 font-medium ${darkMode ? 'text-white' : 'text-black'}`}>Shop</a>
+                                <a href="#story" className={`block py-2 font-medium ${darkMode ? 'text-white' : 'text-black'}`}>Story</a>
+                                <a href="#lookbook" className={`block py-2 font-medium ${darkMode ? 'text-white' : 'text-black'}`}>Lookbook</a>
+                            </div>
+                        )}
+                    </div>
+                </nav>
+            );
+        }
+
+        // Hero Section
+        function HeroSection({ darkMode }) {
+            return (
+                <section id="home" className={`min-h-screen flex items-center justify-center relative overflow-hidden ${darkMode ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-black' : 'bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100'}`}>
+                    <div className="absolute inset-0 opacity-20">
+                        <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500 rounded-full filter blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-20 right-20 w-96 h-96 bg-pink-500 rounded-full filter blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+                    </div>
+
+                    <div className="relative z-10 text-center px-6 max-w-5xl">
+                        <h1 className={`font-display text-6xl md:text-8xl font-bold mb-6 animate-fadeInUp ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            TOKYO TALKIES
+                        </h1>
+                        <p className={`text-xl md:text-2xl mb-8 animate-fadeInUp ${darkMode ? 'text-gray-300' : 'text-gray-700'}`} style={{animationDelay: '0.2s'}}>
+                            Modern Street Fashion Meets Timeless Elegance
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fadeInUp" style={{animationDelay: '0.4s'}}>
+                            <button className="btn-primary px-8 py-4 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform">
+                                SHOP NOW
+                            </button>
+                            <button className={`px-8 py-4 border-2 font-semibold rounded-full hover:scale-105 transition-transform ${darkMode ? 'border-white text-white' : 'border-black text-black'}`}>
+                                EXPLORE COLLECTION
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+                        <i className={`fas fa-chevron-down text-2xl ${darkMode ? 'text-white' : 'text-black'}`}></i>
+                    </div>
+                </section>
+            );
+        }
+
+        // Featured Collections
+        function FeaturedCollections({ darkMode, activeFilter, setActiveFilter }) {
+            const filters = ['All', 'Women', 'Dresses', 'Tops', 'New Arrivals'];
+            
+            const collections = [
+                { id: 1, name: 'Evening Elegance', category: 'Dresses', image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=600', price: '$299' },
+                { id: 2, name: 'Street Chic', category: 'Tops', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600', price: '$149' },
+                { id: 3, name: 'Summer Breeze', category: 'Dresses', image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600', price: '$199' },
+                { id: 4, name: 'Urban Edge', category: 'Women', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600', price: '$179' },
+                { id: 5, name: 'Minimal Luxe', category: 'New Arrivals', image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600', price: '$249' },
+                { id: 6, name: 'Bold Statement', category: 'Tops', image: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=600', price: '$129' },
+            ];
+
+            const filteredCollections = activeFilter === 'All' 
+                ? collections 
+                : collections.filter(item => item.category === activeFilter);
+
+            return (
+                <section id="collections" className={`py-20 ${darkMode ? 'bg-black' : 'bg-white'}`}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <h2 className={`font-display text-5xl md:text-6xl font-bold text-center mb-4 animate-fadeInUp ${darkMode ? 'text-white' : 'text-black'}`}>
+                            Featured Collections
+                        </h2>
+                        <p className={`text-center text-lg mb-12 animate-fadeInUp ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Curated styles for the modern fashionista
+                        </p>
+
+                        {/* Filters */}
+                        <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fadeInUp">
+                            {filters.map(filter => (
+                                <button
+                                    key={filter}
+                                    onClick={() => setActiveFilter(filter)}
+                                    className={`px-6 py-2 rounded-full font-medium transition-all ${
+                                        activeFilter === filter
+                                            ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
+                                            : darkMode
+                                            ? 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                    }`}
+                                >
+                                    {filter}
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Collection Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {filteredCollections.map((item, index) => (
+                                <div key={item.id} className="product-card rounded-2xl overflow-hidden hover-lift animate-scaleIn" style={{animationDelay: `${index * 0.1}s`}}>
+                                    <div className="relative h-96">
+                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                        <div className="overlay flex items-end p-6">
+                                            <button className="btn-primary w-full py-3 bg-white text-black font-semibold rounded-full hover:scale-105 transition-transform">
+                                                Quick View
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className={`p-6 card-light ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                                        <h3 className={`font-display text-2xl font-semibold mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>{item.name}</h3>
+                                        <p className={`text-sm mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{item.category}</p>
+                                        <div className="flex justify-between items-center">
+                                            <span className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-black'}`}>{item.price}</span>
+                                            <button className="text-red-500 hover:scale-110 transition-transform">
+                                                <i className="far fa-heart text-2xl"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Trending Products
+        function TrendingProducts({ darkMode }) {
+            const products = [
+                { id: 1, name: 'Silk Kimono Dress', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600', price: '$399', rating: 4.8 },
+                { id: 2, name: 'Leather Biker Jacket', image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600', price: '$499', rating: 4.9 },
+                { id: 3, name: 'Vintage Denim Set', image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600', price: '$279', rating: 4.7 },
+                { id: 4, name: 'Pleated Midi Skirt', image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=600', price: '$189', rating: 4.6 },
+            ];
+
+            return (
+                <section id="products" className={`py-20 ${darkMode ? 'bg-gradient-to-b from-black to-gray-900' : 'bg-gradient-to-b from-white to-gray-50'}`}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <h2 className={`font-display text-5xl md:text-6xl font-bold text-center mb-4 animate-fadeInUp ${darkMode ? 'text-white' : 'text-black'}`}>
+                            Trending Now
+                        </h2>
+                        <p className={`text-center text-lg mb-12 animate-fadeInUp ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            The most coveted pieces of the season
+                        </p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {products.map((product, index) => (
+                                <div key={product.id} className={`product-card rounded-2xl overflow-hidden hover-glow animate-fadeInUp ${darkMode ? 'bg-gray-800' : 'bg-white shadow-lg'}`} style={{animationDelay: `${index * 0.15}s`}}>
+                                    <div className="relative h-80">
+                                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                        <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                            HOT
+                                        </div>
+                                    </div>
+                                    <div className="p-5">
+                                        <h3 className={`font-semibold text-lg mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>{product.name}</h3>
+                                        <div className="flex items-center mb-3">
+                                            <div className="flex text-yellow-400">
+                                                {[...Array(5)].map((_, i) => (
+                                                    <i key={i} className={`fas fa-star text-sm ${i < Math.floor(product.rating) ? '' : 'opacity-30'}`}></i>
+                                                ))}
+                                            </div>
+                                            <span className={`ml-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>({product.rating})</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-black'}`}>{product.price}</span>
+                                            <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-full hover:scale-105 transition-transform">
+                                                <i className="fas fa-shopping-cart mr-2"></i>Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Brand Story
+        function BrandStory({ darkMode }) {
+            return (
+                <section id="story" className={`py-20 ${darkMode ? 'bg-black' : 'bg-white'}`}>
+                    <div className="max-w-6xl mx-auto px-6">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                            <div className="animate-slideInLeft">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1558769132-cb1aea1c8347?w=800" 
+                                    alt="Tokyo Street" 
+                                    className="rounded-2xl shadow-2xl"
+                                />
+                            </div>
+                            <div className="animate-slideInRight">
+                                <h2 className={`font-display text-5xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-black'}`}>
+                                    Our Story
+                                </h2>
+                                <p className={`text-lg mb-4 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    Born in the vibrant streets of Tokyo, Tokyo Talkies represents the fusion of traditional Japanese aesthetics with contemporary street fashion.
+                                </p>
+                                <p className={`text-lg mb-4 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    Each piece tells a story of craftsmanship, innovation, and the bold spirit of modern youth culture. We believe fashion is a conversation between the past and the future.
+                                </p>
+                                <p className={`text-lg mb-6 leading-relaxed ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                    Our mission is to empower individuals to express their unique identity through clothing that transcends trends and celebrates authenticity.
+                                </p>
+                                <button className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-full font-semibold hover:scale-105 transition-transform">
+                                    Discover More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Lookbook
+        function Lookbook({ darkMode }) {
+            const images = [
+                'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600',
+                'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600',
+                'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=600',
+                'https://images.unsplash.com/photo-1502716119720-b23a93e5fe1b?w=600',
+                'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600',
+                'https://images.unsplash.com/photo-1514315384763-ba401779410f?w=600',
+            ];
+
+            return (
+                <section id="lookbook" className={`py-20 ${darkMode ? 'bg-gradient-to-b from-gray-900 to-black' : 'bg-gradient-to-b from-gray-50 to-white'}`}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <h2 className={`font-display text-5xl md:text-6xl font-bold text-center mb-4 animate-fadeInUp ${darkMode ? 'text-white' : 'text-black'}`}>
+                            Lookbook 2024
+                        </h2>
+                        <p className={`text-center text-lg mb-12 animate-fadeInUp ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            A visual journey through our latest collection
+                        </p>
+
+                        <div className="masonry">
+                            {images.map((image, index) => (
+                                <div key={index} className="masonry-item group cursor-pointer animate-fadeIn" style={{animationDelay: `${index * 0.1}s`}}>
+                                    <div className="relative overflow-hidden rounded-2xl">
+                                        <img 
+                                            src={image} 
+                                            alt={`Look ${index + 1}`} 
+                                            className="w-full h-auto transform group-hover:scale-110 transition-transform duration-500"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                            <span className="text-white font-semibold text-lg">Look {index + 1}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Testimonials
+        function Testimonials({ darkMode }) {
+            const testimonials = [
+                { name: 'Sarah Chen', role: 'Fashion Blogger', text: 'Tokyo Talkies has completely transformed my wardrobe. The quality and design are unmatched!', rating: 5 },
+                { name: 'Emma Williams', role: 'Style Influencer', text: 'Every piece feels like a work of art. I get compliments everywhere I go!', rating: 5 },
+                { name: 'Maya Patel', role: 'Creative Director', text: 'Finally, a brand that understands modern femininity. Absolutely obsessed!', rating: 5 },
+            ];
+
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+                }, 5000);
+                return () => clearInterval(timer);
+            }, []);
+
+            return (
+                <section className={`py-20 ${darkMode ? 'bg-black' : 'bg-white'}`}>
+                    <div className="max-w-4xl mx-auto px-6">
+                        <h2 className={`font-display text-5xl md:text-6xl font-bold text-center mb-16 animate-fadeInUp ${darkMode ? 'text-white' : 'text-black'}`}>
+                            What They Say
+                        </h2>
+
+                        <div className="relative">
+                            {testimonials.map((testimonial, index) => (
+                                <div
+                                    key={index}
+                                    className={`transition-opacity duration-500 ${index === currentIndex ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
+                                >
+                                    <div className={`text-center p-12 rounded-2xl ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+                                        <div className="flex justify-center mb-4">
+                                            {[...Array(testimonial.rating)].map((_, i) => (
+                                                <i key={i} className="fas fa-star text-yellow-400 text-2xl mx-1"></i>
+                                            ))}
+                                        </div>
+                                        <p className={`text-xl md:text-2xl italic mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            "{testimonial.text}"
+                                        </p>
+                                        <h4 className={`font-semibold text-xl ${darkMode ? 'text-white' : 'text-black'}`}>{testimonial.name}</h4>
+                                        <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testimonial.role}</p>
+                                    </div>
+                                </div>
+                            ))}
+
+                            <div className="flex justify-center mt-8 space-x-2">
+                                {testimonials.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentIndex(index)}
+                                        className={`w-3 h-3 rounded-full transition-all ${index === currentIndex ? 'bg-purple-500 w-8' : darkMode ? 'bg-gray-600' : 'bg-gray-300'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Newsletter
+        function Newsletter({ darkMode }) {
+            return (
+                <section className={`py-20 ${darkMode ? 'bg-gradient-to-r from-purple-900 to-pink-900' : 'bg-gradient-to-r from-purple-200 to-pink-200'}`}>
+                    <div className="max-w-4xl mx-auto px-6 text-center">
+                        <h2 className={`font-display text-4xl md:text-5xl font-bold mb-4 animate-fadeInUp ${darkMode ? 'text-white' : 'text-gray-900'}`}>
+                            Join Our Fashion Community
+                        </h2>
+                        <p className={`text-lg mb-8 animate-fadeInUp ${darkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                            Subscribe to get exclusive access to new arrivals, special offers, and style tips
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto animate-fadeInUp">
+                            <input 
+                                type="email" 
+                                placeholder="Enter your email" 
+                                className={`flex-1 px-6 py-4 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
+                            />
+                            <button className="btn-primary px-8 py-4 bg-black text-white font-semibold rounded-full hover:scale-105 transition-transform">
+                                Subscribe
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            );
+        }
+
+        // Footer
+        function Footer({ darkMode }) {
+            return (
+                <footer className={`py-16 ${darkMode ? 'bg-black border-t border-gray-800' : 'bg-gray-100 border-t border-gray-300'}`}>
+                    <div className="max-w-7xl mx-auto px-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                            <div>
+                                <h3 className={`font-display text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-black'}`}>TOKYO TALKIES</h3>
+                                <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                    Redefining street fashion with elegance and innovation.
+                                </p>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-black'}`}>Shop</h4>
+                                <ul className="space-y-2">
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>New Arrivals</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Dresses</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Tops</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Accessories</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-black'}`}>Support</h4>
+                                <ul className="space-y-2">
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Contact Us</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Shipping Info</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Returns</a></li>
+                                    <li><a href="#" className={`hover:opacity-70 transition ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>FAQ</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 className={`font-semibold mb-4 ${darkMode ? 'text-white' : 'text-black'}`}>Follow Us</h4>
+                                <div className="flex space-x-4">
+                                    <a href="#" className={`text-2xl hover:scale-110 transition-transform ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        <i className="fab fa-instagram"></i>
+                                    </a>
+                                    <a href="#" className={`text-2xl hover:scale-110 transition-transform ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        <i className="fab fa-facebook"></i>
+                                    </a>
+                                    <a href="#" className={`text-2xl hover:scale-110 transition-transform ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        <i className="fab fa-twitter"></i>
+                                    </a>
+                                    <a href="#" className={`text-2xl hover:scale-110 transition-transform ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                        <i className="fab fa-pinterest"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={`text-center pt-8 border-t ${darkMode ? 'border-gray-800 text-gray-400' : 'border-gray-300 text-gray-600'}`}>
+                            <p>&copy; 2024 Tokyo Talkies. All rights reserved.</p>
+                        </div>
+                    </div>
+                </footer>
+            );
+        }
+
+        // Render App
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
